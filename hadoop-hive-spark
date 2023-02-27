@@ -1,0 +1,26 @@
+列出文件目录
+hadoop fs -ls /
+
+递归列出所有
+hadoop fs -ls -R /
+
+创建文件夹
+hadoop fs -mkdir /dataset
+hadoop fs -mkdir -p /dataset/input/dir
+
+上传文件
+hadoop fs -put ./hello.scala /dataset
+
+下载文件
+hadoop dfs -get /dataset/hello.scala .
+
+查看文件内容
+hadoop fs -cat /dataset/hello.scala
+
+统计目录下个文件的大小
+hadoop fs -du /dataset    结果为字节
+
+删除文件或者文件夹
+hadoop fs -rm /dataset/hello.scala  文件或者空目录
+
+hadoop fs -rm -r /hello  文件夹
