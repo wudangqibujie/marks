@@ -24,3 +24,14 @@ hadoop fs -du /dataset    结果为字节
 hadoop fs -rm /dataset/hello.scala  文件或者空目录
 
 hadoop fs -rm -r /hello  文件夹
+
+rdd 集合创建
+val rdd1 = sc.parallelize(List(1, 2, 3, 4))
+rdd1.collect().foreach(println)
+
+rdd 外部创建
+读取本地
+val rdd = sc.textFile("/home/jayliu1/textfile.txt")
+rdd.foreach(println)
+读取hdfs
+val rdd = sc.textFile("hdfs://localhost:8020/input/textfile.txt")

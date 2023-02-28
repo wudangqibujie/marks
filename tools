@@ -1,0 +1,5 @@
+ssh localhost 免密  https://blog.csdn.net/xiaochen1219/article/details/80016852
+ssh-keygen -t dsa -P '' -f ~/.ssh/id_dsa
+cat ~/.ssh/id_dsa.pub >> ~/.ssh/authorized_keys
+chmod 700 ~/.ssh
+chmod 644 ~/.ssh/authorized_keys
