@@ -1,5 +1,38 @@
+--------------------------------- ssh localhost 免密登录 ------------------------------------
 ssh localhost 免密  https://blog.csdn.net/xiaochen1219/article/details/80016852
 ssh-keygen -t dsa -P '' -f ~/.ssh/id_dsa
 cat ~/.ssh/id_dsa.pub >> ~/.ssh/authorized_keys
 chmod 700 ~/.ssh
 chmod 644 ~/.ssh/authorized_keys
+
+
+
+--------------------------------- cmake安装 ------------------------------------
+cmake 安装
+yum install -y gcc gcc-c++ make automake
+yum install -y wget
+wget http://www.cmake.org/files/v2.8/cmake-2.8.10.2.tar.gz
+tar -zxvf cmake-2.8.10.2.tar.gz
+cd cmake-2.8.10.2
+./bootstrap
+gmake
+gmake install
+
+
+--------------------------------- centOS maven 安装 ------------------------------------
+mkdir maven
+https://mirrors.tuna.tsinghua.edu.cn/
+解压
+vim /etc/profile
+MAVEN_HOME=apache-maven-3.6.3
+export PATH=${MAVEN_HOME}/bin:${PATH}
+source  /etc/profile
+
+
+--------------------------------- scala xgboost ------------------------------------
+
+
+
+
+
+
