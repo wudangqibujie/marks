@@ -32,7 +32,40 @@ source  /etc/profile
 --------------------------------- scala xgboost ------------------------------------
 
 
+--------------------------------- hadoop  没有datanode ------------------------------------
+https://blog.csdn.net/huguihua2002/article/details/100079564
+
+
+--------------------------------- pip 豆瓣源 ------------------------------------
+pip3 install -i http://pypi.douban.com/simple/ xgboost
+
+
+--------------------------------- IDEA Maven ALI镜像源 ------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <mirrors>
+        <mirror>
+            <id>alimaven</id>
+            <mirrorOf>central</mirrorOf>
+            <name>aliyun maven</name>
+            <url>http://maven.aliyun.com/nexus/content/repositories/central/</url>
+        </mirror>
+    </mirrors>
+</settings>
+
+
+bin/spark-submit --class org.apache.spark.examples.SparkPi --master yarn --deploy-mode cluster \./examples/jars/spark-examples_2.12-3.2.3.jar 10
 
 
 
-
+<property>
+         <name>dfs.namenode.name.dir</name> 
+         <value>file:/home/jayliu1/hadoop/tmp/dfs/name</value>
+</property>
+<!--指定hdfs中datanode的存储位置-->
+<property>
+         <name>dfs.datanode.data.dir</name>
+         <value>file:/home/jayliu1/hadoop/tmp/dfs/data</value>
+</property>
