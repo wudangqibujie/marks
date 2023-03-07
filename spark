@@ -1,0 +1,106 @@
+Usage: ./bin/spark-shell [options]
+
+Options:
+  --master MASTER_URL         spark://host:port, 
+                              mesos://host:port, 
+                              yarn, 
+                              local.
+  --deploy-mode DEPLOY_MODE   Whether to launch the driver program locally ("client") or
+                              on one of the worker machines inside the cluster ("cluster")
+                              (Default: client).
+  --class CLASS_NAME          Your application's main class (for Java / Scala apps).
+  --name NAME                 A name of your application.
+  --jars JARS                 Comma-separated list of local jars to include on the driver
+                              and executor classpaths.
+  --packages                  Comma-separated list of maven coordinates of jars to include
+                              on the driver and executor classpaths. Will search the local
+                              maven repo, then maven central and any additional remote
+                              repositories given by --repositories. The format for the
+                              coordinates should be groupId:artifactId:version.
+  --exclude-packages          Comma-separated list of groupId:artifactId, to exclude while
+                              resolving the dependencies provided in --packages to avoid
+                              dependency conflicts.
+  --repositories              Comma-separated list of additional remote repositories to
+                              search for the maven coordinates given with --packages.
+  --py-files PY_FILES         Comma-separated list of .zip, .egg, or .py files to place
+                              on the PYTHONPATH for Python apps.
+  --files FILES               Comma-separated list of files to be placed in the working
+                              directory of each executor. File paths of these files
+                              in executors can be accessed via SparkFiles.get(fileName).
+
+  --conf PROP=VALUE           Arbitrary Spark configuration property.
+  --properties-file FILE      Path to a file from which to load extra properties. If not
+                              specified, this will look for conf/spark-defaults.conf.
+
+  --driver-memory MEM         Memory for driver (e.g. 1000M, 2G) (Default: 1024M).
+  --driver-java-options       Extra Java options to pass to the driver.
+  --driver-library-path       Extra library path entries to pass to the driver.
+  --driver-class-path         Extra class path entries to pass to the driver. Note that
+                              jars added with --jars are automatically included in the
+                              classpath.
+
+  --executor-memory MEM       Memory per executor (e.g. 1000M, 2G) (Default: 1G).
+
+  --proxy-user NAME           User to impersonate when submitting the application.
+                              This argument does not work with --principal / --keytab.
+
+  --help, -h                  Show this help message and exit.
+  --verbose, -v               Print additional debug output.
+  --version,                  Print the version of current Spark.
+
+ Spark standalone with cluster deploy mode only:
+  --driver-cores NUM          Cores for driver (Default: 1).
+
+ Spark standalone or Mesos with cluster deploy mode only:
+  --supervise                 If given, restarts the driver on failure.
+  --kill SUBMISSION_ID        If given, kills the driver specified.
+  --status SUBMISSION_ID      If given, requests the status of the driver specified.
+
+ Spark standalone and Mesos only:
+  --total-executor-cores NUM  Total cores for all executors.
+
+ Spark standalone and YARN only:
+  --executor-cores NUM        Number of cores per executor. (Default: 1 in YARN mode,
+                              or all available cores on the worker in standalone mode)
+
+ YARN-only:
+  --driver-cores NUM          Number of cores used by the driver, only in cluster mode
+                              (Default: 1).
+  --queue QUEUE_NAME          The YARN queue to submit to (Default: "default").
+  --num-executors NUM         Number of executors to launch (Default: 2).
+                              If dynamic allocation is enabled, the initial number of
+                              executors will be at least NUM.
+  --archives ARCHIVES         Comma separated list of archives to be extracted into the
+                              working directory of each executor.
+  --principal PRINCIPAL       Principal to be used to login to KDC, while running on
+                              secure HDFS.
+  --keytab KEYTAB             The full path to the file that contains the keytab for the
+                              principal specified above. This keytab will be copied to
+                              the node running the Application Master via the Secure
+                              Distributed Cache, for renewing the login tickets and the
+                              delegation tokens periodically.
+
+
+
+
+
+
+
+--num-executors 配置Executor的数量
+--driver-memory 配置Driver内存（影响不大）
+--executor-memory 配置每个Executor的内存大小
+--executor-cores  配置每个Executor的CPU core数量
+
+第一种是Spark Standalone模式，
+  你在提交任务前，一定知道或者可以从运维部门获取到你可以使用的资源情况，在编写submit脚本的时候，就根据可用的资源情况进行资源的分配，比如说集群有15台机器，每台机器为8G内存，2个CPU core，那么就指定15个Executor，每个Executor分配8G内存，2个CPU core。
+
+第二种是Spark Yarn模式，
+  由于Yarn使用资源队列进行资源的分配和调度，在表写submit脚本的时候，就根据Spark作业要提交到的资源队列，进行资源的分配，比如资源队列有400G内存，100个CPU core，那么指定50个Executor，每个Executor分配8G内存，2个CPU core。
+
+
+1.增加Executor个数
+  在资源允许的情况下，增加Executor的个数可以提高执行task的并行度。比如有4个Executor，每个Executor有2个CPU core，那么可以并行执行8个task，如果将Executor的个数增加到8个（资源允许的情况下），那么可以并行执行16个task，此时的并行能力提升了一倍。
+2.增加每个Executor的CPU core个数 
+  在资源允许的情况下，增加每个Executor的Cpu core个数，可以提高执行task的并行度。比如有4个Executor，每个Executor有2个CPU core，那么可以并行执行8个task，如果将每个Executor的CPU core个数增加到4个（资源允许的情况下），那么可以并行执行16个task，此时的并行能力提升了一倍。
+3.增加每个Executor的内存量  
+  在资源允许的情况下，增加每个Executor的内存量以后，对性能的提升有三点： 1. 可以缓存更多的数据（即对RDD进行cache），写入磁盘的数据相应减少，甚至可以不写入磁盘，减少了可能的磁盘IO； 2. 可以为shuffle操作提供更多内存，即有更多空间来存放reduce端拉取的数据，写入磁盘的数据相应减少，甚至可以不写入磁盘，减少了可能的磁盘IO； 3. 可以为task的执行提供更多内存，在task的执行过程中可能创建很多对象，内存较小时会引发频繁的GC，增加内存后，可以避免频繁的GC，提升整体性能。
